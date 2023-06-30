@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="./knockout-3.5.1.js"></script>
+</head>
+<body>
+    First Name:<input type="text" name="FirstName" data-bind="value:FirstName"/><br>
+    Last Name:<input type="text" name="LastName" data-bind="value:LastName"/>
+    <p>Hello <span data-bind="text:FullName"></span></p>
+    <script>
+        var view=function(fname, lname){
+            this.FirstName=ko.observable(fname);
+            this.LastName=ko.observable(lname);
+            this.FullName=ko.computed(function(){
+                return this.FirstName()+ " "+this.LastName()
+            },this)
+        }
+        ko.applyBindings(new view("Rohan", "Gupta"))
+    </script>
+</body>
+
+
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="./knockout-3.5.1.js"></script>
+        <script src="./jquery-3.7.0.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $("#btnShowDetails").click(function(){
+                    alert("User Id: "+AccView.Id+" "+"Balance: "+AccView.Balance())
+                })
+
+                $("#btnDeposit").click(function(){
+                    AccView.Balance(AccView.Balance()+Number($("#Amount").val()));
+                })
+
+                $("#btnWithdraw").click(function(){
+                    AccView.Balance(AccView.Balance()-Number($("#WithdrawAmount").val()));
+                })
+
+                $("#btnAddAccount").click(function(){
+                    var acc = new Account($("#txtNewId").val(),$("#txtNewName").val(),$("#txtNewBalance").val());
+                    AccView.Accounts.push(acc);
+                    alert(AccView.Accounts().length);
+                })
+
+                $("#btnPopAccount").click(function(){
+                    AccView.Accounts.pop();
+                })
+
+                $("#ddlAccounts").change(function(){
+                    var index=document.getElementById("ddlAccounts").selectedIndex;
+                    AccView.selectedAccountIndex(index);
+                })
+            })
+
+        </script>
+    </head>
+    <body>
+        Account Id's:
+        <select id="ddlAccounts" data-bind="options:Accounts,optionsText:'Name',optionsValue:'Id'"></select>
+        Total Number of Account: <span data-bind="text:Accounts().length"></span>
+        <hr>
+
+        <h2 style="color: brown;">Account Details</h2>
+
+        Id:<span data-bind="text:Accounts()[selectedAccountIndex()].Id"></span><br>
+        Name:<span data-bind="text:Accounts()[selectedAccountIndex()].Name"></span><br>
+        Balance:<span data-bind="text:Accounts()[selectedAccountIndex()].Balance"></span><br>
+        <input type="button" id="btnShowDetails" value="ShowDetails"/>
+
+        Add Amount:<input type="text" id="Amount"/>
+        <input type="button" id="btnDeposit" value="Deposit"/>
+
+        Withdraw Amount:<input type="text" id="WithdrawAmount"/>
+        <input type="button" id="btnWithdraw" value="Withdraw"/>
+        <hr>
+        <label style="color: brown;">New Balance:</label> <input type="text" data-bind="value:Balance"/>
+
+        <hr>
+        New Id:<input type="text" id="txtNewId" value=""/><br>
+        New Name:<input type="text" id="txtNewName" value=""/><br>
+        New Balance:<input type="text" id="txtNewBalance" value=""/><br>
+        <input type="button" id="btnAddAccount" value="Add Account">
+        <input type="button" id="btnPopAccount" value="Pop Account">
+
+
+        <script>
+            function Account(id,name,balance){
+                this.Id=id;
+                this.Name=name;
+                this.Balance=balance
+            }
+            function AccView(acc){
+                this.Id=acc.Id;
+                this.Name=acc.Name;
+                this.Balance=ko.observable(acc.Balance);
+                var a1= new Account(3123,"Chaman Modi",10000)
+                var a2= new Account(3124,"Rohan Gupta",5000)
+                var a3= new Account(3125,"Rishi shah",40000)
+                this.Accounts=ko.observableArray([a1,a2,a3])
+                this.selectedAccountIndex=ko.observable(0)
+
+            }
+
+            var acc=new Account(3123,"Chaman Modi",10000);
+            var AccView=new AccView(acc);
+            ko.applyBindings(AccView);
+            
+        </script>
+    </body>
+</html>
