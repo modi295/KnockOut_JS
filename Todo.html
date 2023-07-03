@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="./knockout-3.5.1.js"></script>
+        <script src="./jquery-3.7.0.min.js"></script>
+    </head>
+    <body>
+        <h3 style="color: brown;">Tasks</h3>
+        <hr>
+
+        <form data-bind="submit: addTask">
+            Schedule task: <input data-bind="value: newTaskText" placeholder="What needs to be done?" />
+            <button type="submit" style="color: white;background:green;">Add</button>
+        </form>
+        
+        <ul data-bind="foreach: tasks, visible: tasks().length > 0">
+            <li>
+                <input type="checkbox" data-bind="checked: isDone" />
+                <input data-bind="value: title, disable: isDone" />
+                <a href="#" data-bind="click: $parent.removeTask"><button style="color: white;background:red;">Remove</button></a>
+            </li>
+        </ul>
+        
+        Enjoy, You have <b data-bind="text: incompleteTasks().length">&nbsp;</b> incomplete task(s)
+        <span data-bind="visible: incompleteTasks().length == 0"></span>
+
+
+        <script>
+            function Task(data) {
+    this.title = ko.observable(data.title);
+    this.isDone = ko.observable(data.isDone);
+}
+
+function TaskListViewModel() {
+    // Data
+    var self = this;
+    self.tasks = ko.observableArray([]);
+    self.newTaskText = ko.observable();
+    self.incompleteTasks = ko.computed(function() {
+        return ko.utils.arrayFilter(self.tasks(), function(task) { return !task.isDone() });
+    });
+
+    // Operations
+    self.addTask = function() {
+        self.tasks.push(new Task({ title: this.newTaskText() }));
+        self.newTaskText("");
+    };
+    self.removeTask = function(task) { self.tasks.remove(task) };
+}
+
+ko.applyBindings(new TaskListViewModel());
+            
+            
+        </script>
+    </body>
+</html>
